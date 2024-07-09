@@ -8,8 +8,10 @@ import org.springframework.web.service.annotation.GetExchange;
 
 public interface GptApiClient {
     //returns gpt summary for a pdf provided as text
-    @GetExchange("query")
+    @GetExchange("summary")
     DocumentSummary getDocumentSummary(@PathVariable String document);
+
+
 
     //user prompt / chat
 
