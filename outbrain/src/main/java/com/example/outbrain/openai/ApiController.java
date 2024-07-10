@@ -8,6 +8,12 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+import com.example.outbrain.wikipedia.dto.WikipediaData;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
 public class ApiController {
     private final WikipediaService wikipediaService;
     private final PDFService pdfService;
@@ -27,11 +33,18 @@ public class ApiController {
     }
 
     @GetMapping("/resourcefinder")
-    public void findResources(@PathVariable String filePath, @PathVariable String prompt){
+    public void findResources(@PathVariable String filePath, @PathVariable String prompt, @PathVariable int limit){
+        //convert pdf
         String document = pdfService.convertPDF(filePath);
         PromptData data = new PromptData(prompt, document);
         //ResourceData keywords = aiService.getResourceData(data);
         //search wiki for keywords
+
+        //get keywords
+        ResourceData keywords = gptApiClient.getResourceData(data);
+
+        //search wiki for keywords
+        wikipediaService.findByMultipleTitle(keywords.keywords(),limit);
     }
 
 }

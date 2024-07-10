@@ -11,6 +11,8 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,5 +58,20 @@ public class WikipediaService {
     final Query query = new StringQuery("{\"match\":{\"title\":{\"query\":\""+ title + "\"}}}\"");
 
     return elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki")).stream().map(SearchHit::getContent).collect(Collectors.toList());
+  }
+
+  public List<WikipediaData> findByMultipleTitle(List<String> titles, int limit) {
+    Query query = null;
+    List<WikipediaData> data = new ArrayList<>();
+
+    for (String title : titles) {
+      query = new StringQuery("{\"match\":{\"title\":{\"query\":\""+ title + "\"}}}\"");
+      List<WikipediaData> temp = elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki"))
+              .stream()
+              .map(SearchHit::getContent)
+              .collect(Collectors.toList()).subList(0,limit);
+      data.addAll(temp);
+    }
+    return data;
   }
 }
