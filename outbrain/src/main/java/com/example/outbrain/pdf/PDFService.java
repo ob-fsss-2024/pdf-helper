@@ -13,7 +13,6 @@ import static org.apache.pdfbox.Loader.loadPDF;
 public class PDFService {
 
     public String convertPDF(String pathToPdf) {
-        //pathToPdf = "/Users/lovro/Downloads/EP_Spring_2024__EB045EP_report_en.pdf";
         File file = new File(pathToPdf);
         PDDocument document = null;
         String text = null;
@@ -26,7 +25,6 @@ public class PDFService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return text;
     }
 }

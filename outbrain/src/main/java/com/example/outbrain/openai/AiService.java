@@ -1,14 +1,10 @@
 package com.example.outbrain.openai;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+import com.example.outbrain.openai.client.dto.DocumentSummary;
 import org.springframework.ai.azure.openai.AzureOpenAiChatModel;
+import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-
-import static org.apache.pdfbox.Loader.loadPDF;
-
+@Service
 public class AiService {
     private final AzureOpenAiChatModel chatModel;
 
@@ -16,11 +12,11 @@ public class AiService {
         this.chatModel = chatModel;
     }
 
-    public String genSummary(String text) {
+    public DocumentSummary genSummary(String text) {
         if(text.length() > 5) {
-            return chatModel.call("Make a summary of this text:" + text);
+            return new DocumentSummary(chatModel.call("Make a summary of this text:" + text));
         }else {
-            return "The pdf does not contain enough text to make a detailed summary.";
+            return new DocumentSummary("The pdf does not contain enough text to make a detailed summary.");
         }
     }
 }
