@@ -4,6 +4,11 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.example.outbrain.wikipedia.dto.WikipediaData;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
@@ -12,9 +17,9 @@ import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,10 +28,17 @@ public class WikipediaService {
   private final ElasticsearchClient elasticsearchClient;
   private final ElasticsearchOperations elasticsearchOperations;
 
-  public WikipediaService(final WikipediaRepository wikipediaRepository, final ElasticsearchClient elasticsearchClient, final ElasticsearchOperations elasticsearchOperations) {
+  private final Logger logger = LoggerFactory.getLogger(WikipediaService.class.getName());
+  private final Counter wikiQueryCounter;
+  private final Timer articleFetchingTimer;
+
+
+  public WikipediaService(final WikipediaRepository wikipediaRepository, final ElasticsearchClient elasticsearchClient, final ElasticsearchOperations elasticsearchOperations, final MeterRegistry metricsRegistry) {
     this.wikipediaRepository = wikipediaRepository;
     this.elasticsearchClient = elasticsearchClient;
     this.elasticsearchOperations = elasticsearchOperations;
+    this.wikiQueryCounter = metricsRegistry.counter("wiki_query_counter");
+    this.articleFetchingTimer = metricsRegistry.timer("fetching_wiki_articles_timer");
   }
 
   public List<WikipediaData> findByTitleRepository(final String title) {
@@ -61,9 +73,9 @@ public class WikipediaService {
   }
 
   public List<ShortWikiData> findByMultipleTitle(List<String> titles, int limit) {
+    final long startTime = System.currentTimeMillis();
     Query query = null;
     List<ShortWikiData> data = new ArrayList<>();
-
     for (String title : titles) {
       List<ShortWikiData> temp = new ArrayList<>();
       query = new StringQuery("{\"match\":{\"title\":{\"query\":\""+ title + "\"}}}\"");
@@ -76,13 +88,14 @@ public class WikipediaService {
       }
 
       for (WikipediaData w: output) {
-        temp.add(new ShortWikiData(w.title(), w.text().substring(0,500),
+        wikiQueryCounter.increment();
+        temp.add(new ShortWikiData(w.title(), w.text().length() > 500 ? w.text().substring(0,500) : w.text(),
                 (w.external_link().size()>3) ? (w.external_link().subList(0,3)) : (w.external_link())));
       }
-      
-      System.out.println("for title "+title + "len of output "+output.size());
+      logger.info("For the title {} the number of wikipedia article results is {}",title ,output.size());
       data.addAll(temp);
     }
+    articleFetchingTimer.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
     return data;
   }
 }
