@@ -2,6 +2,7 @@ package com.example.outbrain.openai;
 import com.example.outbrain.openai.client.dto.DocumentSummary;
 import com.example.outbrain.openai.client.dto.PromptData;
 import com.example.outbrain.openai.client.dto.ResourceData;
+import com.example.outbrain.openai.client.dto.ResponseMode;
 import com.example.outbrain.pdf.PDFService;
 import com.example.outbrain.wikipedia.ShortWikiData;
 import com.example.outbrain.wikipedia.WikipediaService;
@@ -28,9 +29,9 @@ public class ApiController {
     }
 
     @PostMapping("/summary")
-    public DocumentSummary getSummary(@RequestBody String filePath)  {
+    public DocumentSummary getSummary(@RequestBody String filePath, ResponseMode mode, int wordLimit)  {
         String document = pdfService.convertPDF(filePath);
-        return aiService.genSummary(document);
+        return aiService.genSummary(document, mode, wordLimit);
     }
 
     @PostMapping("/resourcefinder")
