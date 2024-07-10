@@ -69,7 +69,11 @@ public class WikipediaService {
       List<WikipediaData> temp = elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki"))
               .stream()
               .map(SearchHit::getContent)
-              .collect(Collectors.toList()).subList(0,limit);
+              .collect(Collectors.toList());
+      if(temp.size()>limit){
+        temp = temp.subList(0,limit);
+      }
+      System.out.println("for title "+title + "len of temp "+temp.size());
       data.addAll(temp);
     }
     return data;

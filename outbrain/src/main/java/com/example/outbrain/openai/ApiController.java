@@ -1,6 +1,7 @@
 package com.example.outbrain.openai;
 import com.example.outbrain.openai.client.dto.DocumentSummary;
 import com.example.outbrain.openai.client.dto.PromptData;
+import com.example.outbrain.openai.client.dto.ResourceData;
 import com.example.outbrain.pdf.PDFService;
 import com.example.outbrain.wikipedia.WikipediaService;
 import org.springframework.ai.azure.openai.AzureOpenAiChatModel;
@@ -31,19 +32,23 @@ public class ApiController {
         return aiService.genSummary(document);
     }
 
-    @GetMapping("/resourcefinder")
-    public void findResources(@PathVariable String filePath, @PathVariable String prompt, @PathVariable int limit){
+    @PostMapping("/resourcefinder")
+    public List<WikipediaData> findResources(@RequestBody String filePath, String prompt, int limit){
         //convert pdf
+        System.out.println(filePath);
         String document = pdfService.convertPDF(filePath);
         PromptData data = new PromptData(prompt, document);
         //ResourceData keywords = aiService.getResourceData(data);
         //search wiki for keywords
 
         //get keywords
-        //ResourceData keywords = gptApiClient.getResourceData(data);
+        ResourceData keywords = aiService.getKeywords(document);
+        System.out.println("this is nr of keywords retreived "+keywords.keywords().size());
+        System.out.println("this is thw limit "+limit);
 
         //search wiki for keywords
-        //wikipediaService.findByMultipleTitle(keywords.keywords(),limit);
+        return wikipediaService.findByMultipleTitle(keywords.keywords(),limit);
+
     }
 
 }

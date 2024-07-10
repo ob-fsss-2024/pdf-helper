@@ -23,6 +23,7 @@ public class PDFService {
             text = pdfStripper.getText(document);
             document.close();
         } catch (IOException e) {
+            System.out.println("allalalal");
             throw new RuntimeException(e);
         }
         return text;
