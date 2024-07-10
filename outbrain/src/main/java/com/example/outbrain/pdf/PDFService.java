@@ -25,7 +25,6 @@ public class PDFService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return text;
     }
 }
