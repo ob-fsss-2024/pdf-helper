@@ -45,24 +45,30 @@ public class AiService {
                     + "Do not add special characters (eg. line breaks). Keep it below "+wordLimit+ "word limit. Text: "+ text);
             summaryGenCounter.increment();
             summaryGenTimer.record(Duration.ofMillis(System.currentTimeMillis() - startTime));
+            //summaryGenTimer.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
             logger.info("Successfully obtained a {} summary of the text.", mode);
 
             return new DocumentSummary(response);
         }else {
-            return new DocumentSummary("The pdf does not contain enough text to make a detailed summary.");
+            logger.error("The pdf does not contain enough text to make a detailed summary.");
+            return null;
         }
     }
 
     public ResourceData getKeywords(String text) {
+        final long startTime = System.currentTimeMillis();
         if(text.length() > 5) {
             String response = chatModel.call("Retreive up to 10 keywords " +
                     "from the following text. Separate the keywords by commas. Text: " + text);
             List<String> keywords = List.of(response.split(", "));
             keywordGenCounter.increment();
+            keywordGenTimer.record(Duration.ofMillis(System.currentTimeMillis() - startTime));
+            //keywordGenTimer.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
             logger.info("Successfully obtained keywords for given text.");
             return new ResourceData(keywords);
         }else {
-            return new ResourceData(Collections.singletonList("The pdf does not contain enough text to find keywords."));
+            logger.error("The pdf does not contain enough text to find keywords.");
+            return null;
         }
     }
 

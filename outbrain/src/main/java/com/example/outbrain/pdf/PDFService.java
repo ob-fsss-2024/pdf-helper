@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+//import java.util.concurrent.TimeUnit;
 
 import static org.apache.pdfbox.Loader.loadPDF;
 
@@ -40,11 +41,11 @@ public class PDFService {
             text = pdfStripper.getText(document);
             document.close();
         } catch (IOException e) {
-            System.out.println("allalalal");
             throw new RuntimeException(e);
         }
         pdfTransformationCounter.increment();
-        pdfTransformationTimer.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
+        pdfTransformationTimer.record(Duration.ofMillis(System.currentTimeMillis() - startTime));
+        // pdfTransformationTimer.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
         logger.info("The pdf document {} has been successfuly transformed into plain text",file.getName());
         return text;
     }
