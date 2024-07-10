@@ -60,22 +60,30 @@ public class WikipediaService {
     return elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki")).stream().map(SearchHit::getContent).collect(Collectors.toList());
   }
 
-  public List<WikipediaData> findByMultipleTitle(List<String> titles, int limit) {
+  public List<ShortWikiData> findByMultipleTitle(List<String> titles, int limit) {
     Query query = null;
-    List<WikipediaData> data = new ArrayList<>();
+    List<ShortWikiData> data = new ArrayList<>();
 
     for (String title : titles) {
+      List<ShortWikiData> temp = new ArrayList<>();
       query = new StringQuery("{\"match\":{\"title\":{\"query\":\""+ title + "\"}}}\"");
-      List<WikipediaData> temp = elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki"))
+      List<WikipediaData> output = elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki"))
               .stream()
               .map(SearchHit::getContent)
               .collect(Collectors.toList());
-      if(temp.size()>limit){
-        temp = temp.subList(0,limit);
+      if(output.size()>limit){
+        output = output.subList(0,limit);
       }
-      System.out.println("for title "+title + "len of temp "+temp.size());
+
+      for (WikipediaData w: output) {
+        temp.add(new ShortWikiData(w.title(), w.text().substring(0,500),
+                (w.external_link().size()>3) ? (w.external_link().subList(0,3)) : (w.external_link())));
+      }
+      
+      System.out.println("for title "+title + "len of output "+output.size());
       data.addAll(temp);
     }
     return data;
   }
 }
+
