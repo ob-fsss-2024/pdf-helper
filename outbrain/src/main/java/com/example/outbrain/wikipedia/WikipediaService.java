@@ -4,6 +4,11 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.example.outbrain.wikipedia.dto.WikipediaData;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
@@ -12,9 +17,9 @@ import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,10 +28,17 @@ public class WikipediaService {
   private final ElasticsearchClient elasticsearchClient;
   private final ElasticsearchOperations elasticsearchOperations;
 
-  public WikipediaService(final WikipediaRepository wikipediaRepository, final ElasticsearchClient elasticsearchClient, final ElasticsearchOperations elasticsearchOperations) {
+  private final Logger logger = LoggerFactory.getLogger(WikipediaService.class.getName());
+  private final Counter wikiQueryCounter;
+  private final Timer articleFetchingTimer;
+
+
+  public WikipediaService(final WikipediaRepository wikipediaRepository, final ElasticsearchClient elasticsearchClient, final ElasticsearchOperations elasticsearchOperations, final MeterRegistry metricsRegistry) {
     this.wikipediaRepository = wikipediaRepository;
     this.elasticsearchClient = elasticsearchClient;
     this.elasticsearchOperations = elasticsearchOperations;
+    this.wikiQueryCounter = metricsRegistry.counter("wiki_query_counter");
+    this.articleFetchingTimer = metricsRegistry.timer("fetching_wiki_articles_timer");
   }
 
   public List<WikipediaData> findByTitleRepository(final String title) {
@@ -60,22 +72,31 @@ public class WikipediaService {
     return elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki")).stream().map(SearchHit::getContent).collect(Collectors.toList());
   }
 
-  public List<WikipediaData> findByMultipleTitle(List<String> titles, int limit) {
+  public List<ShortWikiData> findByMultipleTitle(List<String> titles, int limit) {
+    final long startTime = System.currentTimeMillis();
     Query query = null;
-    List<WikipediaData> data = new ArrayList<>();
-
+    List<ShortWikiData> data = new ArrayList<>();
     for (String title : titles) {
+      List<ShortWikiData> temp = new ArrayList<>();
       query = new StringQuery("{\"match\":{\"title\":{\"query\":\""+ title + "\"}}}\"");
-      List<WikipediaData> temp = elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki"))
+      List<WikipediaData> output = elasticsearchOperations.search(query, WikipediaData.class, IndexCoordinates.of("enwiki"))
               .stream()
               .map(SearchHit::getContent)
               .collect(Collectors.toList());
-      if(temp.size()>limit){
-        temp = temp.subList(0,limit);
+      if(output.size()>limit){
+        output = output.subList(0,limit);
       }
-      System.out.println("for title "+title + "len of temp "+temp.size());
+
+      for (WikipediaData w: output) {
+        wikiQueryCounter.increment();
+        temp.add(new ShortWikiData(w.title(), w.text().length() > 500 ? w.text().substring(0,500) : w.text(),
+                (w.external_link().size()>3) ? (w.external_link().subList(0,3)) : (w.external_link())));
+      }
+      logger.info("For the title {} the number of wikipedia article results is {}",title ,output.size());
       data.addAll(temp);
     }
+    articleFetchingTimer.record(System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS);
     return data;
   }
 }
+
