@@ -7,13 +7,12 @@ import org.springframework.ai.azure.openai.AzureOpenAiChatModel;
 import org.springframework.web.bind.annotation.*;
 
 
-@RestController
 import com.example.outbrain.wikipedia.dto.WikipediaData;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-
+@RestController
 public class ApiController {
     private final WikipediaService wikipediaService;
     private final PDFService pdfService;
@@ -41,10 +40,10 @@ public class ApiController {
         //search wiki for keywords
 
         //get keywords
-        ResourceData keywords = gptApiClient.getResourceData(data);
+        //ResourceData keywords = gptApiClient.getResourceData(data);
 
         //search wiki for keywords
-        wikipediaService.findByMultipleTitle(keywords.keywords(),limit);
+        //wikipediaService.findByMultipleTitle(keywords.keywords(),limit);
     }
 
 }
