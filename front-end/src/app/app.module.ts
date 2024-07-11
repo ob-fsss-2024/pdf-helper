@@ -10,17 +10,18 @@ import { HeaderComponent } from './components/header/header.component';
 import { AboutView } from './views/about/about.view';
 import { HomeView } from './views/home/home.view'
 import { ResourceFinderView } from './views/resource-finder/r-finder.view';
+import { SummarizerView } from './views/summarizer/summarizer.view';
 
 
 @NgModule({
     declarations: [
         AppComponent,
+        SummarizerView,
         HomeView,
         AboutView,
         ResourceFinderView,
         HeaderComponent,
         FooterComponent
-        
     ],
     bootstrap: [AppComponent], imports: 
         [BrowserModule,

@@ -30,7 +30,8 @@ public class ApiController {
         this.aiService = aiService;
     }
 
-    @PostMapping("/summary")
+    @CrossOrigin(origins = "http://localhost:4200")
+    @RequestMapping(path = "summary", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public DocumentSummary getSummary(@RequestParam("file") MultipartFile file, ResponseMode mode, int wordLimit)  {
         String document = pdfService.convertPDF(file);
         return aiService.genSummary(document, mode, wordLimit);
