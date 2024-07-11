@@ -21,3 +21,12 @@
     background-color: #226c60 !important; 
     border-color: #226c60 !important;    
   }
+
+  input[type="radio"]:checked {
+    background-color: #226c60 !important; /* Ensure it shows the correct color when checked */
+    border: none;
+}
+  input[type="radio"]:focus {
+    outline: none; /* Remove the default outline */
+    box-shadow: 0 0 0 0.2rem rgba(34, 108, 96, 0.3); /* Custom focus shadow */
+  }
