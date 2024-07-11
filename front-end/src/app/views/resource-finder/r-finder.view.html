@@ -1,0 +1,21 @@
+
+    <div class="container mt-5">
+        <h2>Upload PDF Form</h2>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <!-- Input for PDF file -->
+            <div class="form-group">
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Default file input example</label>
+                    <input class="form-control" type="file" id="formFile"
+                    (change)="fileChange($event)">
+                  </div>
+            </div>
+            <!-- Input for limit -->
+            <div class="form-group">
+                <label for="limit">Resource limit:</label>
+                <input type="number" class="form-control" id="limit" name="limit"  [(ngModel)]="pdfdata.limit" placeholder="Resource limit per keyword">
+            </div>
+            <!-- Submit button -->
+            <button type="submit" (click)="postPdf()" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
