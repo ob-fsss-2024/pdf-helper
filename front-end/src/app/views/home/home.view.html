@@ -1,14 +1,14 @@
-<a routerLink="/note/new">
+<a routerLink="/resource">
     <div class="fsss-home-view__note-preview fsss-home-view__note-create">
         <h1>+</h1>
-        Create new note
+        Generate Summary
     </div>
 </a>
-<ng-container *ngFor="let note of notes">
-    <a routerLink="/note/{{note.id}}">
+<ng-container>
+    <a routerLink="">
         <div class="fsss-home-view__note-preview">
-            <h2>{{note.title}}</h2>
-            <textarea readonly class="fsss-home-view__note-text" [ngModel]="note.text"></textarea>
+            <h2></h2>
+            <textarea readonly class="fsss-home-view__note-text"]></textarea>
         </div>
     </a>
 </ng-container>

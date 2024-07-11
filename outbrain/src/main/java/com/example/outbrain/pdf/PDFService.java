@@ -4,14 +4,18 @@ import com.example.outbrain.wikipedia.WikipediaService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 //import java.util.concurrent.TimeUnit;
 
@@ -29,13 +33,12 @@ public class PDFService {
     }
 
 
-    public String convertPDF(String pathToPdf) {
+    public String convertPDF(MultipartFile file) {
         final long startTime = System.currentTimeMillis();
-        File file = new File(pathToPdf);
         PDDocument document = null;
         String text = null;
         try {
-            document = loadPDF(file);
+            document = loadPDF(file.getBytes());
             System.out.println("PDF loaded");
             PDFTextStripper pdfStripper = new PDFTextStripper();
             text = pdfStripper.getText(document);

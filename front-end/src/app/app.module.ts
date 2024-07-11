@@ -9,19 +9,23 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AboutView } from './views/about/about.view';
 import { HomeView } from './views/home/home.view'
-import { NoteView } from './views/note/note.view';
+import { ResourceFinderView } from './views/resource-finder/r-finder.view';
+
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeView,
-        NoteView,
         AboutView,
+        ResourceFinderView,
         HeaderComponent,
-        FooterComponent,
+        FooterComponent
+        
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent], imports: 
+        [BrowserModule,
         AppRoutingModule,
-        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())]
+        FormsModule], 
+        providers: [provideHttpClient(withInterceptorsFromDi())]
 })
 export class AppModule { }

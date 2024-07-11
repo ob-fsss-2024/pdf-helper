@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AboutView } from './views/about/about.view';
 import { HomeView } from './views/home/home.view';
-import { NoteView } from './views/note/note.view';
+import { ResourceFinderView } from './views/resource-finder/r-finder.view';
 
 const routes: Routes = [
-    { path: 'note/:id', component: NoteView },
+    { path: 'resourcefinder', component: ResourceFinderView },
     { path: 'about', component: AboutView },
     { path: '', component: HomeView }
 ];

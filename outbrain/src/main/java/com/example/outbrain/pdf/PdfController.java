@@ -1,9 +1,12 @@
 package com.example.outbrain.pdf;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+
 
 @RestController
 public class PdfController {
@@ -13,8 +16,7 @@ public class PdfController {
         this.pdfService = pdfService;
     }
 
-    @PostMapping("/convert")
-    public String convertPDF(@RequestBody String path){
-        return pdfService.convertPDF(path);
+    public String convertPDF(@RequestParam("file") MultipartFile file) throws IOException {
+        return pdfService.convertPDF(file);
     }
 }
