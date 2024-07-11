@@ -14,22 +14,29 @@
                 <input type="number" class="form-control" id="limit" name="limit"  [(ngModel)]="pdfdata.limit" placeholder="Resource limit per keyword">
             </div>
             <!-- Submit button -->
-            <button type="submit" (click)="postPdf()" class="btn btn-primary mt-2">Upload</button>
+            <button type="submit" (click)="postPdf()" class="btn btn-primary mt-2 mb-2">Upload</button>
         </form>
-        <ng-container *ngFor="let res of results; let i = index">
-            <div class="fsss-home-view__note-preview">
-              <h3>{{res.title}}</h3>
-              <p class="fsss-home-view__note-text">{{res.text}}...</p>
-              <ul>
-                <li *ngFor="let link of res.external_links; let j = index" [class.hidden]="!res.expanded && j >= 0">
-                  <a href="{{link}}">{{link}}</a>
-                </li>
-              </ul>
-              <button (click)="toggleExpand(i)">
-                {{ res.expanded ? 'Show Less' : 'Show More' }}
-              </button>
+        <div class="container">
+            <div class="row">
+              <ng-container *ngFor="let res of results; let i = index">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <h3 class="card-title">{{res.title}}</h3>
+                      <p class="card-text">{{res.text}}...</p>
+                      <h5>Resources</h5>
+                      <ul class="list-group list-group-flush">
+                        <li *ngFor="let link of res.external_links; let j = index" [class.d-none]="!res.expanded && j >= 0" class="list-group-item">
+                          <a href="{{link}}" class="card-link">{{link}}</a>
+                        </li>
+                      </ul>
+                      <button class="btn btn-primary mt-3" (click)="toggleExpand(i)">
+                        {{ res.expanded ? 'Show Less' : 'Show More' }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
             </div>
-          </ng-container>
-          
-        
+          </div>          
     </div>
