@@ -1,0 +1,24 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /logs/application.log
+    json.keys_under_root: true
+    json.overwrite_keys: true
+    json.add_error_key: true
+    json.expand_keys: true
+
+output.elasticsearch:
+  hosts: ["20.82.91.150:9200"]
+  protocol: "http"
+  username: "elastic"
+  password: "Urk7r77wTbp==ibHbn8+"
+
+output:
+  elasticsearch:
+    allow_older_versions: true
+
+processors:
+  - add_fields:
+      fields:
+        app_name: fsss_backend

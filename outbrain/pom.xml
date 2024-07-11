@@ -117,6 +117,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>summer-school</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
