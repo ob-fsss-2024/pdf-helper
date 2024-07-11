@@ -23,10 +23,20 @@
   }
 
   input[type="radio"]:checked {
-    background-color: #226c60 !important; /* Ensure it shows the correct color when checked */
+    background-color: #226c60 !important; 
     border: none;
 }
   input[type="radio"]:focus {
-    outline: none; /* Remove the default outline */
-    box-shadow: 0 0 0 0.2rem rgba(34, 108, 96, 0.3); /* Custom focus shadow */
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(34, 108, 96, 0.3); 
   }
+
+  .aTags {
+    color: gray; 
+    transition: color 0.3s ease; 
+    text-decoration: none; 
+}
+
+.aTags:hover {
+    color: black;  
+}

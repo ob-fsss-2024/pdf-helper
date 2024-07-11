@@ -5,7 +5,8 @@
             <div class="form-group">
                 <div class="mb-3">
                     <input class="form-control" type="file" id="formFile"
-                    (change)="fileChange($event)">
+                    (change)="fileChange($event)"
+                    required>
                   </div>
             </div>
             <!-- Input for limit -->
@@ -27,7 +28,7 @@
                       <h5>Resources</h5>
                       <ul class="list-group list-group-flush">
                         <li *ngFor="let link of res.external_links; let j = index" [class.d-none]="!res.expanded && j >= 0" class="list-group-item">
-                          <a href="{{link}}" class="card-link">{{link}}</a>
+                          <a href="{{link}}" class="card-link aTags">{{link}}</a>
                         </li>
                       </ul>
                       <button class="btn btn-primary mt-3" (click)="toggleExpand(i)">

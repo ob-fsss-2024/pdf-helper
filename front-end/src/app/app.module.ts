@@ -17,9 +17,9 @@ import { SummarizerView } from './views/summarizer/summarizer.view';
     declarations: [
         AppComponent,
         SummarizerView,
+        ResourceFinderView,
         HomeView,
         AboutView,
-        ResourceFinderView,
         HeaderComponent,
         FooterComponent
     ],

@@ -6,10 +6,11 @@
             <div class="form-group">
                 <div class="mb-3">
                     <input class="form-control" type="file" id="formFile"
-                    (change)="fileChange($event)">
+                    (change)="fileChange($event)"
+                    required>
                   </div>
             </div>
-            <label class="form-label">Select preferred mode:</label>
+            <label class="form-label fw-bold me-1">Select preferred mode:</label>
             <div class="form-check">
                 <input class="form-check-input" [(ngModel)]="pdfdata.mode" value="detailed" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                 <label class="form-check-label" for="flexRadioDefault1">
@@ -24,13 +25,19 @@
               </div>
             <!-- Input for limit -->
             <div class="form-group">
-                <label for="limit">Word limit:</label>
+                <label for="limit" class="form-label fw-bold  mt-1 me-1">Word limit:</label>
                 <input type="number" class="form-control" id="limit" name="wordlimit"  [(ngModel)]="pdfdata.wordLimit" placeholder="Resource limit per keyword">
             </div>
             <!-- Submit button -->
-            <button type="submit" (click)="postPdf()" class="btn btn-primary mt-2" >Upload</button>
+            <button type="submit" (click)="postPdf()" class="btn btn-primary mt-2 mb-2" >Upload</button>
         </form>
+        <div class="card" *ngIf="res.response">
+            <div class="card-header">
+                <h3>A {{pdfdata.mode}} summary for your PDF</h3>
+            </div>
+        
+            <div class="card-body">
+                <p class="fsss-home-view__note-text">{{res.response}}</p>
+            </div>
+        </div>
     </div>
-      <div class="fsss-home-view__note-preview">
-      <p class="fsss-home-view__note-text">{{res.response}}</p>
-      </div>
