@@ -45,7 +45,6 @@ public class ApiController {
         ResourceData keywords = aiService.getKeywords(document);
         //search wiki for keywords
         return wikipediaService.findByMultipleTitle(keywords.keywords(),limit);
-
     }
 
 }
