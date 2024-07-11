@@ -1,0 +1,33 @@
+
+    <div class="container mt-5">
+        <h2>Upload PDF to obtain a summary</h2>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <!-- Input for PDF file -->
+            <div class="form-group">
+                <div class="mb-3">
+                    <input class="form-control" type="file" id="formFile"
+                    (change)="fileChange($event)">
+                  </div>
+            </div>
+            <label class="form-label">Select preferred mode:</label>
+            <div class="form-check">
+                <input class="form-check-input" [(ngModel)]="pdfdata.mode" value="detailed" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Detailed
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" [(ngModel)]="pdfdata.mode" value="concise" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Concise
+                </label>
+              </div>
+            <!-- Input for limit -->
+            <div class="form-group">
+                <label for="limit">Word limit:</label>
+                <input type="number" class="form-control" id="limit" name="wordlimit"  [(ngModel)]="pdfdata.wordLimit" placeholder="Resource limit per keyword">
+            </div>
+            <!-- Submit button -->
+            <button type="submit" (click)="postPdf()" class="btn btn-primary mt-2" >Upload</button>
+        </form>
+    </div>
