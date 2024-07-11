@@ -1,0 +1,6 @@
+<div class="fsss-note-view__toolbar">
+    <button (click)="saveChanges()" title="Save changes">💾</button>
+    <button (click)="deleteNote()" title="Delete note">❌</button>
+</div>
+<input class="fsss-note-view__title" type="text" [(ngModel)]="note.title" />
+<textarea class="fsss-note-view__text" [(ngModel)]="note.text"></textarea>
