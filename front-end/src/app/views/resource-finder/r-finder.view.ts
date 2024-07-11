@@ -4,6 +4,7 @@ import { isDefined } from "src/app/helpers/common.helpers";
 import { HttpClient } from "@angular/common/http";
 import { PDF_BASE_URL } from "../../app.config";
 import { ResPdfData } from "src/app/types/resPdfData";
+import { resourceResults } from "src/app/types/resourceResults";
 
 @Component({
     templateUrl: './r-finder.view.html',
@@ -17,7 +18,12 @@ export class ResourceFinderView {
     private router = inject(Router)
 
     pdfdata: ResPdfData = { pdf: new FormData(), limit: 0 };
+    results: resourceResults[] = [];
+    expanded: boolean = false;
 
+    toggleExpand(index: number): void {
+        this.results[index].expanded = !this.results[index].expanded;
+      }
     fileChange(event){
         const pdfFiles = event.target.files;
         // console.log(pdfFile)
@@ -29,13 +35,11 @@ export class ResourceFinderView {
 
 
     postPdf(): void {
-        console.log("manja")
-
         this.http.post<any>(
-            PDF_BASE_URL+"/resourcefinder?prompt=%22%22&limit=1",
+            PDF_BASE_URL+"/resourcefinder?prompt=%22%22&limit="+this.pdfdata.limit,
             this.pdfdata.pdf
         ).subscribe(
-            pdfdata => console.log(pdfdata)
+            pdfdata => this.results = pdfdata
         );
                 // this.http.get<ResPdfData>(
                 //     `${PDF_BASE_URL}/${this.id}`

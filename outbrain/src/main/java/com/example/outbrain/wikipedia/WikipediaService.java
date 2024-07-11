@@ -84,7 +84,7 @@ public class WikipediaService {
               .stream()
               .map(SearchHit::getContent)
               .collect(Collectors.toList());
-      if(output.size()>limit){
+      if(output.size()>=limit){
         output = output.subList(0,limit);
       }
 

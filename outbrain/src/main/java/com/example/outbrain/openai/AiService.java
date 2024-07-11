@@ -59,7 +59,7 @@ public class AiService {
         final long startTime = System.currentTimeMillis();
         if(text.length() > 5) {
             String response = chatModel.call("Retreive up to 10 keywords " +
-                    "from the following text. Separate the keywords by commas. Text: " + text);
+                    "from the following text. Separate the keywords by commas. Important! DO NOT USE ANY LINE BREAKS OR SIMILIAR CHARACTERS Text: " + text);
             List<String> keywords = List.of(response.split(", "));
             keywordGenCounter.increment();
             keywordGenTimer.record(Duration.ofMillis(System.currentTimeMillis() - startTime));

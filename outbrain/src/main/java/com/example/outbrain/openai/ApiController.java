@@ -42,7 +42,9 @@ public class ApiController {
     public List<ShortWikiData> findResources(@RequestParam("file") MultipartFile file, String prompt, int limit){
         //convert pdf
         String document = pdfService.convertPDF(file);
-
+        if(document.length() < 5){
+            return null;
+        }
         //get keywords
         ResourceData keywords = aiService.getKeywords(document);
         //search wiki for keywords

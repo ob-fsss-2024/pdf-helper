@@ -5,6 +5,8 @@ import { HttpClient } from "@angular/common/http";
 import { PDF_BASE_URL } from "../../app.config";
 import { SumPdfData } from "src/app/types/sumPdfData";
 import { ResponseMode } from "src/app/types/responseMode";
+import { resourceResults } from "src/app/types/resourceResults";
+import { summarizerResults } from "src/app/types/c";
 
 @Component({
     templateUrl: './summarizer.view.html',
@@ -16,6 +18,8 @@ export class SummarizerView {
 
     private http = inject(HttpClient);
     private router = inject(Router)
+
+    res: summarizerResults = {response: ""};
 
     pdfdata: SumPdfData = { pdf: new FormData(), 
         mode: null,
@@ -41,7 +45,7 @@ export class SummarizerView {
             PDF_BASE_URL+"/summary"+queryParams,
             this.pdfdata.pdf
         ).subscribe(
-            pdfdata => console.log(pdfdata)
+            pdfdata => this.res = pdfdata
         );
     }
 
