@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 
 import com.example.outbrain.wikipedia.dto.WikipediaData;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 @RestController
+@CrossOrigin(origins = "*")
 public class ApiController {
     private final WikipediaService wikipediaService;
     private final PDFService pdfService;
@@ -30,14 +30,12 @@ public class ApiController {
         this.aiService = aiService;
     }
 
-    @CrossOrigin(origins = "https://icy-smoke-05c513203.5.azurestaticapps.net")
     @RequestMapping(path = "summary", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public DocumentSummary getSummary(@RequestParam("file") MultipartFile file, ResponseMode mode, int wordLimit)  {
         String document = pdfService.convertPDF(file);
         return aiService.genSummary(document, mode, wordLimit);
     }
 
-    @CrossOrigin(origins = "https://icy-smoke-05c513203.5.azurestaticapps.net")
     @RequestMapping(path = "resourcefinder", method = RequestMethod.POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public List<ShortWikiData> findResources(@RequestParam("file") MultipartFile file, String prompt, int limit){
         //convert pdf
